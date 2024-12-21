@@ -1,4 +1,7 @@
-import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,22 +21,30 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-      const user = await this.userModel.findById(id);
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-      return user;
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      id,
+      updateUserDto,
+      { new: true },
+    );
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
+    }
+    return updatedUser;
   }
 
- async remove(id: string) {
+  async remove(id: string) {
     const user = await this.userModel.findByIdAndDelete(id);
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-    return  {message : "User deleted"}
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return { message: 'User deleted' };
   }
 }
