@@ -8,11 +8,14 @@ import {
   Delete,
   UseGuards,
   Request,
+  SetMetadata,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { HasRole } from 'src/auth/role.guard';
+import { SetRoles } from 'src/auth/set-roles.decarator';
 
 @Controller('users')
 export class UsersController {
@@ -24,6 +27,9 @@ export class UsersController {
   }
 
  
+
+  @SetRoles("admin" , "user")
+  @UseGuards(AuthGuard , HasRole)
   @Get()
   findAll(@Request() req: { user: any } & Request) {
     return this.usersService.findAll();
