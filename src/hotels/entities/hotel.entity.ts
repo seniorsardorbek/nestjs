@@ -7,6 +7,8 @@ import mongoose from 'mongoose';
     createdAt: 'created_at',
     updatedAt: 'updated_at',
   },
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 })
 export class Hotel {
   @Prop({
@@ -60,14 +62,15 @@ export class Hotel {
     required: true,
   })
   price: string;
-
- 
 }
 
-
-
-
-
-
 export const HotelSchema = SchemaFactory.createForClass(Hotel);
+
+HotelSchema.virtual('services', {
+  ref: 'Service',
+  localField: '_id',
+  foreignField: 'hotel',
+  justOne: true,
+});
+
 HotelSchema.index({ loc: '2dsphere' });

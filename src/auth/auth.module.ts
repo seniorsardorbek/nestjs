@@ -6,8 +6,11 @@ import { User, UserSchema } from 'src/users/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports  : [MongooseModule.forFeature([{name : User.name , schema : UserSchema}]) , JwtModule.register({global : true}) ] ,
+  imports: [
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    JwtModule.register({ global: true }),
+  ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
 })
 export class AuthModule {}

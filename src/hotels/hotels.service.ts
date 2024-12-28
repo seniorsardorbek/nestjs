@@ -12,16 +12,18 @@ export class HotelsService {
     @InjectModel(Hotel.name) private hotelModel: Model<Hotel>,
     @InjectModel(Service.name) private serviceModel: Model<Service>,
   ) {}
-  async create(createHotelDto: CreateHotelDto) {
-    const hotelData = new this.hotelModel({ ...createHotelDto });
+  async create(createHotelDto: CreateHotelDto , images : Array<Express.Multer.File>) {
+    console.log(images);
+    const hotelImages = images.map(image => ( image.filename ));
+    const hotelData = new this.hotelModel({ ...createHotelDto , images : hotelImages });
     const hotel = await hotelData.save();
     const serviceData = new this.serviceModel({ hotel: hotel?._id });
     const services = await serviceData.save();
-    return { ...hotel, services };
+    return { hotel, services };
   }
 
   findAll() {
-    return this.hotelModel.find();
+    return this.hotelModel.find().populate('services');
   }
 
   findOne(id: number) {
