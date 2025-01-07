@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { Booking } from './entities/booking.entity';
 import { Hotel } from 'src/hotels/entities/hotel.entity';
 import { User } from 'src/users/entities/user.entity';
+import { calculateDays, convertToNumber } from 'src/_shared/calculate';
 
 @Injectable()
 export class BookingsService {
@@ -21,18 +22,22 @@ export class BookingsService {
     if (!hotel) {
       throw new NotFoundException('Hotel not found');
     }
+    console.log(hotel);
     const user = await this.userModel.findById(req.user?.i);
     console.log(user);
     
     if (!user) {
       throw new NotFoundException('User  not found');
     }
+    const duration = calculateDays(createBookingDto.enter_date , createBookingDto.exit_date)
+    const price  = duration * convertToNumber(hotel.price);
 
-    return this.bookingModel.create({...createBookingDto  , user :  req.user?._id , });
+    return this.bookingModel.create({...createBookingDto  , user :  req.user?.i , price , duration });
   }
 
-  findAll() {
-    return `This action returns all bookings`;
+ async  findAll() {
+    const booking = await this.bookingModel.find();
+    return booking;
   }
 
   findOne(id: number) {
