@@ -26,8 +26,8 @@ export class HotelsService {
     return this.hotelModel.find().populate('services');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} hotel`;
+  findOne(id: string) {
+    return this.hotelModel.findById(id).populate('services');
   }
 
   update(id: number, updateHotelDto: UpdateHotelDto) {
